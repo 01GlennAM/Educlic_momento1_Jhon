@@ -1,5 +1,6 @@
 package com.cesde.educlic.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,7 @@ public class DetallePedido {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pedido_id", nullable = false)
+    @JsonIgnore
     private Pedido pedido;
 
     @ManyToOne(fetch = FetchType.LAZY)

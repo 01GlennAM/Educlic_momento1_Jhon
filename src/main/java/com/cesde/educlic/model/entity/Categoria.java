@@ -1,5 +1,6 @@
 package com.cesde.educlic.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,5 +24,6 @@ public class Categoria {
     private String nombre; // Coincide con valores como "Tenis" del front
 
     @OneToMany(mappedBy = "categoria", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Producto> productos;
 }

@@ -1,0 +1,622 @@
+{
+  "info": {
+    "_postman_id": "a1190c76-0f9b-4cc9-a12c-62c9a26ec04b",
+    "name": "Educlic API",
+    "description": "Colección para probar la API Spring Boot de Educlic. Importa este archivo en Postman, inicia la aplicación y ajusta la variable baseUrl si el servidor usa otro puerto. Los cuerpos usan las entidades actuales; no requieren DTOs. No incluye credenciales de Neon.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": {
+      "major": 1,
+      "minor": 0,
+      "patch": 0
+    }
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "usuarioId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "categoriaId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "productoId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "pedidoId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "emailPrueba",
+      "value": "cliente.prueba@example.com",
+      "type": "string"
+    },
+    {
+      "key": "passwordPrueba",
+      "value": "CambiarEstaClave123",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Autenticación",
+      "item": [
+        {
+          "name": "Registrar usuario",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Cliente de prueba\",\n  \"email\": \"{{emailPrueba}}\",\n  \"password\": \"{{passwordPrueba}}\",\n  \"rol\": \"CLIENTE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/registro",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "registro"
+              ]
+            },
+            "description": "Registra un usuario. Cambia emailPrueba si ya existe en la base de datos."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Usuario registrado (201)', function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id !== undefined) pm.collectionVariables.set('usuarioId', data.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Iniciar sesión",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{emailPrueba}}\",\n  \"password\": \"{{passwordPrueba}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Inicio de sesión exitoso (200)', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Usuarios",
+      "item": [
+        {
+          "name": "Listar usuarios",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "usuarios"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar usuario por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/{{usuarioId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "usuarios",
+                "{{usuarioId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear usuario",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Usuario desde Postman\",\n  \"email\": \"usuario.postman@example.com\",\n  \"password\": \"CambiarEstaClave123\",\n  \"rol\": \"CLIENTE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "usuarios"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Usuario creado (201)', function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id !== undefined) pm.collectionVariables.set('usuarioId', data.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Eliminar usuario",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/usuarios/{{usuarioId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "usuarios",
+                "{{usuarioId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categorías",
+      "item": [
+        {
+          "name": "Listar categorías",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categorias"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar categoría por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias/{{categoriaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categorias",
+                "{{categoriaId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear categoría",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Calzado deportivo\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categorias"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Categoría creada (201)', function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id !== undefined) pm.collectionVariables.set('categoriaId', data.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Eliminar categoría",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/categorias/{{categoriaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "categorias",
+                "{{categoriaId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Productos",
+      "item": [
+        {
+          "name": "Listar productos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar producto por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/{{productoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "{{productoId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar productos por categoría",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/categoria/{{categoriaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "categoria",
+                "{{categoriaId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear producto",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Tenis de prueba\",\n  \"descripcion\": \"Producto de prueba creado desde Postman\",\n  \"precio\": 125000.00,\n  \"stock\": 10,\n  \"imagenUrl\": \"https://example.com/tenis.jpg\",\n  \"categoria\": {\n    \"id\": {{categoriaId}}\n  },\n  \"tallas\": [\"38\", \"39\", \"40\"],\n  \"colores\": [\"Negro\", \"Blanco\"],\n  \"activo\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/productos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos"
+              ]
+            },
+            "description": "Requiere que categoriaId corresponda a una categoría existente."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Producto creado (201)', function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id !== undefined) pm.collectionVariables.set('productoId', data.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Actualizar producto",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Tenis de prueba actualizado\",\n  \"descripcion\": \"Producto actualizado desde Postman\",\n  \"precio\": 130000.00,\n  \"stock\": 8,\n  \"imagenUrl\": \"https://example.com/tenis.jpg\",\n  \"categoria\": {\n    \"id\": {{categoriaId}}\n  },\n  \"tallas\": [\"38\", \"39\", \"40\"],\n  \"colores\": [\"Negro\"],\n  \"activo\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/{{productoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "{{productoId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Eliminar producto",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/productos/{{productoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "productos",
+                "{{productoId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Pedidos",
+      "item": [
+        {
+          "name": "Listar pedidos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Listar pedidos por usuario",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/usuario/{{usuarioId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos",
+                "usuario",
+                "{{usuarioId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar pedido por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/{{pedidoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos",
+                "{{pedidoId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear pedido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usuario\": {\n    \"id\": {{usuarioId}}\n  },\n  \"detalles\": [\n    {\n      \"producto\": {\n        \"id\": {{productoId}}\n      },\n      \"cantidad\": 1,\n      \"precioUnitario\": 125000.00\n    }\n  ],\n  \"total\": 125000.00,\n  \"estado\": \"PENDIENTE\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos"
+              ]
+            },
+            "description": "Requiere usuarioId y productoId existentes. El servicio asigna el pedido a cada detalle."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Pedido creado (201)', function () { pm.response.to.have.status(201); });",
+                  "if (pm.response.code === 201) {",
+                  "  const data = pm.response.json();",
+                  "  if (data.id !== undefined) pm.collectionVariables.set('pedidoId', data.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Eliminar pedido",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/api/pedidos/{{pedidoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "pedidos",
+                "{{pedidoId}}"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

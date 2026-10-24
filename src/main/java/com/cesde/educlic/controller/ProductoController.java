@@ -1,5 +1,6 @@
 package com.cesde.educlic.controller;
 
+import com.cesde.educlic.dto.ProductoDto;
 import com.cesde.educlic.model.entity.Producto;
 import com.cesde.educlic.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,19 +37,19 @@ public class ProductoController {
     }
 
     @PostMapping
-    public ResponseEntity<Producto> crear(@RequestBody Producto producto) {
-        Producto nuevoProducto = productoService.guardarProducto(producto);
+    public ResponseEntity<Producto> crear(@RequestBody ProductoDto productoDto) {
+        Producto nuevoProducto = productoService.guardarProducto(productoDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoProducto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Producto> actualizar(@PathVariable Long id, @RequestBody Producto producto) {
-        if (productoService.buscarPorId(id).isPresent()) {
-            producto.setId(id);
-            Producto actualizado = productoService.guardarProducto(producto);
+    public ResponseEntity<Producto> actualizar(@PathVariable Long id, @RequestBody ProductoDto productoDto) {
+        try {
+            Producto actualizado = productoService.actualizarProducto(id, productoDto);
             return ResponseEntity.ok(actualizado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")

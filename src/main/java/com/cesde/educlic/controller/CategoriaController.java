@@ -1,5 +1,6 @@
 package com.cesde.educlic.controller;
 
+import com.cesde.educlic.dto.CategoriaDto;
 import com.cesde.educlic.model.entity.Categoria;
 import com.cesde.educlic.service.CategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,12 +29,21 @@ public class CategoriaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // controlador de categorias
-
     @PostMapping
-    public ResponseEntity<Categoria> crear(@RequestBody Categoria categoria) {
-        Categoria nueva = categoriaService.guardarCategoria(categoria);
+    public ResponseEntity<Categoria> crear(@RequestBody CategoriaDto categoriaDto) {
+        Categoria nueva = categoriaService.guardarCategoria(categoriaDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(nueva);
+    }
+
+    // --- NUEVO ENDPOINT DE ACTUALIZACIÓN ---
+    @PutMapping("/{id}")
+    public ResponseEntity<Categoria> actualizar(@PathVariable Long id, @RequestBody CategoriaDto categoriaDto) {
+        try {
+            Categoria actualizado = categoriaService.actualizarCategoria(id, categoriaDto);
+            return ResponseEntity.ok(actualizado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")

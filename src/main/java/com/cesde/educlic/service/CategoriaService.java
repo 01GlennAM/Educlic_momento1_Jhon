@@ -1,5 +1,6 @@
 package com.cesde.educlic.service;
 
+import com.cesde.educlic.dto.CategoriaDto;
 import com.cesde.educlic.model.entity.Categoria;
 import com.cesde.educlic.repository.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +23,18 @@ public class CategoriaService {
         return categoriaRepository.findById(id);
     }
 
-    public Categoria guardarCategoria(Categoria categoria) {
+    public Categoria guardarCategoria(CategoriaDto dto) {
+        Categoria categoria = Categoria.builder()
+                .nombre(dto.getNombre())
+                .build();
         return categoriaRepository.save(categoria);
+    }
+
+    public Categoria actualizarCategoria(Long id, CategoriaDto dto) {
+        return categoriaRepository.findById(id).map(categoriaExistente -> {
+            categoriaExistente.setNombre(dto.getNombre());
+            return categoriaRepository.save(categoriaExistente);
+        }).orElseThrow(() -> new RuntimeException("Categoría no encontrada con el ID: " + id));
     }
 
     public void eliminarCategoria(Long id) {

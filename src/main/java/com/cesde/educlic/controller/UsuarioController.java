@@ -1,5 +1,6 @@
 package com.cesde.educlic.controller;
 
+import com.cesde.educlic.dto.UsuarioDto;
 import com.cesde.educlic.model.entity.Usuario;
 import com.cesde.educlic.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +30,19 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<Usuario> crear(@RequestBody Usuario usuario) {
-        Usuario nuevo = usuarioService.guardarUsuario(usuario);
+    public ResponseEntity<Usuario> crear(@RequestBody UsuarioDto usuarioDto) {
+        Usuario nuevo = usuarioService.guardarUsuario(usuarioDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevo);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Usuario> actualizar(@PathVariable Long id, @RequestBody UsuarioDto usuarioDto) {
+        try {
+            Usuario actualizado = usuarioService.actualizarUsuario(id, usuarioDto);
+            return ResponseEntity.ok(actualizado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")

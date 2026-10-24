@@ -1,5 +1,6 @@
 package com.cesde.educlic.controller;
 
+import com.cesde.educlic.dto.PedidoDto;
 import com.cesde.educlic.model.entity.Pedido;
 import com.cesde.educlic.service.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,9 +35,20 @@ public class PedidoController {
     }
 
     @PostMapping
-    public ResponseEntity<Pedido> crear(@RequestBody Pedido pedido) {
-        Pedido nuevoPedido = pedidoService.crearPedido(pedido);
+    public ResponseEntity<Pedido> crear(@RequestBody PedidoDto pedidoDto) {
+        Pedido nuevoPedido = pedidoService.crearPedido(pedidoDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoPedido);
+    }
+
+    // --- NUEVO ENDPOINT DE ACTUALIZACIÓN ---
+    @PutMapping("/{id}")
+    public ResponseEntity<Pedido> actualizar(@PathVariable Long id, @RequestBody PedidoDto pedidoDto) {
+        try {
+            Pedido actualizado = pedidoService.actualizarPedido(id, pedidoDto);
+            return ResponseEntity.ok(actualizado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @DeleteMapping("/{id}")

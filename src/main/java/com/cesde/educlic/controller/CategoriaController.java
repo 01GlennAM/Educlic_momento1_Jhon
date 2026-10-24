@@ -28,6 +28,8 @@ public class CategoriaController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    // controlador de categorias
+
     @PostMapping
     public ResponseEntity<Categoria> crear(@RequestBody Categoria categoria) {
         Categoria nueva = categoriaService.guardarCategoria(categoria);
